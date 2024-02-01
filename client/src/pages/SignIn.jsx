@@ -21,10 +21,12 @@ export const SignIn = () => {
       dispatch(signInStart())
       const res = await fetch('/api/auth/sign-in', {
         method: 'POST',
+        // headers: { 'Content-Type': 'application/json' },
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
-      const data = await res.json();
+     
+      const data= await res.json();
       if (data.success === false) {
        dispatch(signInFailure(data.message))
       }
@@ -57,7 +59,7 @@ export const SignIn = () => {
 
         {/* right */}
         <div className="flex-1">
-          <form onSubmit={handleSubmit}>
+          <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
             <div className="">
               <Label value='Your email' />
               <TextInput type='email' placeholder='example@gmail.com' id='email' onChange={handleChange} />

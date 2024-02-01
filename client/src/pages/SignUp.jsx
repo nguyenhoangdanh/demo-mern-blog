@@ -1,13 +1,13 @@
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-
+import OAuth from '../components/OAuth'
 
 export const SignUp = () => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({ });
-  const [errorMessage, setErrorMessage] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,8 +56,8 @@ export const SignUp = () => {
 
         {/* right */}
         <div className="flex-1">
-          <form onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-4">
+          <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
+            <div className="flex flex-col">
               <Label value='Your username' />
               <TextInput type='text' placeholder='Username' id='username' onChange={handleChange} />
             </div>
@@ -69,6 +69,7 @@ export const SignUp = () => {
               <Label value='Your password' />
               <TextInput type='password' placeholder='Password' id='password' onChange={handleChange} />
             </div>
+            
             <Button gradientDuoTone='purpleToPink' type='submit' disabled={loading}>
               {loading ? (
                 <>
@@ -79,6 +80,11 @@ export const SignUp = () => {
                 'Sign Up'
                )}
             </Button>
+            
+            
+            <OAuth />
+            
+            
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Have an account?</span>
