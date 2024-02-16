@@ -14,8 +14,9 @@ export const Dashboard = () => {
     if(tabFromUrl){
       setTab(tabFromUrl)
     }
-  
-  }, [])
+  }, [location.search])
+
+  console.log('tab', tab)
   return (
     <div className='min-h-screen flex flex-col md:flex-row'>
     <div className="md:w-56">
