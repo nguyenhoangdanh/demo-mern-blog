@@ -98,7 +98,7 @@ export const Header = () => {
             </Navbar.Link>
             <Navbar.Link active={path === "/projects"} as={"div"}>
               <Link to={'/projects'}>
-                project
+                Project
               </Link>
             </Navbar.Link>
           </Navbar.Collapse>
