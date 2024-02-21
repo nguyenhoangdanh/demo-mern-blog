@@ -46,11 +46,18 @@ export const DashSidebar = () => {
             </Sidebar.Item>
           </Link>
           {currentUser.isAdmin && (
-            <Link to='/dashboard?tab=posts'>
-              <Sidebar.Item active={tab === 'posts'} icon={HiDocumentText} label={'Post'} labelColor='dark'>
-                Post
-              </Sidebar.Item>
-            </Link>
+            <>
+              <Link to='/dashboard?tab=posts'>
+                <Sidebar.Item active={tab === 'posts'} icon={HiDocumentText} label={'Post'} labelColor='dark'>
+                  Post
+                </Sidebar.Item>
+              </Link>
+              <Link to='/dashboard?tab=users'>
+                <Sidebar.Item active={tab === 'users'} icon={HiDocumentText} label={'User'} labelColor='dark'>
+                  User
+                </Sidebar.Item>
+              </Link>
+            </>
           )}
           <Sidebar.Item className="cursor-pointer" active icon={HiArrowSmRight} label={'Logout'} labelColor='dark' onClick={handleSignOut}>
             Sign out
