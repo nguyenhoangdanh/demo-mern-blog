@@ -6,18 +6,17 @@ import {HiOutlineExclamationCircle} from 'react-icons/hi';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 export default function DashUsers() {
   const {currentUser} = useSelector(state => state.user);
-  const [userPost, setUserPost] = useState([]);
+  const [users, setUsers] = useState([]);
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [postId, setPostId] = useState('');
+  const [userIdToDelete, setUserIdToDelete] = useState('');
   const fetchPosts = async () => {
     try {
       const res = await fetch(`/api/user/get-users`);
-
       const data = await res.json();
-      console.log('data', data);
       if (res.ok) {
-        setUserPost(data.users);
+        setUsers(data.users);
         if (data.users?.length < 9) {
           setShowMore(false);
         }
@@ -28,16 +27,16 @@ export default function DashUsers() {
   };
 
   const handleShowMore = async () => {
-    const startIndex = userPost.length;
+    const startIndex = users.length;
     try {
       const res = await fetch(
-        `/api/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`,
+        `/api/user/get-users?startIndex=${startIndex}`,
       );
       const data = await res.json();
 
       if (res.ok) {
-        setUserPost(prev => [...prev, ...data.posts]);
-        if (data.posts.length < 9) {
+        setUsers(prev => [...prev, ...data.users]);
+        if (data.users.length < 9) {
           setShowMore(false);
         }
       }
@@ -46,11 +45,11 @@ export default function DashUsers() {
     }
   };
 
-  const handleDeletePost = async () => {
+  const handleDeleteUser = async () => {
     setShowModal(false);
     try {
       const res = await fetch(
-        `/api/post/delete-post/${postId}/${currentUser._id}`,
+        `/api/user/delete/${userIdToDelete}`,
         {
           method: 'DELETE',
         },
@@ -61,7 +60,7 @@ export default function DashUsers() {
       if (!res.ok) {
         console.log(data?.message);
       } else {
-        setUserPost(prev => prev.filter(post => post._id !== postId));
+        setUsers(prev => prev.filter(user => user._id !== userIdToDelete));
       }
     } catch (error) {
       console.log(error.message);
@@ -79,7 +78,7 @@ export default function DashUsers() {
       className="
     table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500"
     >
-      {currentUser.isAdmin && userPost?.length > 0 ? (
+      {currentUser.isAdmin && users?.length > 0 ? (
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
@@ -90,33 +89,33 @@ export default function DashUsers() {
               <Table.HeadCell>Admin</Table.HeadCell>
               <Table.HeadCell>Delete</Table.HeadCell>
             </Table.Head>
-            {userPost?.map(post => (
-              <Table.Body className="divide-y">
+            {users?.map(user => (
+              <Table.Body className="divide-y" key={user?._id}>
                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                   <Table.Cell>
-                    {new Date(post.updatedAt).toLocaleDateString()}
+                    {new Date(user.createdAt).toLocaleDateString()}
                   </Table.Cell>
                   <Table.Cell>
-                    <Link to={`/post/${post.slug}`}>
+                    <Link to={`/post/${user.slug}`}>
                       <img
-                        src={post.profilePicture}
-                        // alt={post.title}
+                        src={user.profilePicture}
+                        alt={user.profilePicture}
                         className="w-10 h-10 object-cover bg-gray-500 rounded-full"
                       />
                     </Link>
                   </Table.Cell>
                   <Table.Cell className="font-medium text-gray-900 dark:text-white">
-                    <Link to={`/post/${post.slug}`}>{post.username}</Link>
+                    <Link to={`/post/${user.slug}`}>{user.username}</Link>
                   </Table.Cell>
-                  <Table.Cell>{post.email}</Table.Cell>
+                  <Table.Cell>{user?.email}</Table.Cell>
                   <Table.Cell>
-              {post?.isAdmin ? <FaCheck /> : <FaTimes />}
+              {user?.isAdmin ? <FaCheck className='text-green-500' /> : <FaTimes className='text-red-500'/>}
               </Table.Cell>
                   <Table.Cell className=" font-medium text-red-500 hover:underline">
                     <span
                       onClick={() => {
                         setShowModal(true);
-                        setPostId(post._id);
+                        setUserIdToDelete(user._id);
                       }}
                     >
                       Delete
@@ -136,7 +135,7 @@ export default function DashUsers() {
           )}
         </>
       ) : (
-        <p>You have no posts yet!</p>
+        <p>You have no users yet!</p>
       )}
       <Modal
         show={showModal}
@@ -149,13 +148,13 @@ export default function DashUsers() {
           <div className="text-center">
             <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
             <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
-              Are you sure you want to delete this post?
+              Are you sure you want to delete this user?
             </h3>
             <div className="flex justify-center gap-4">
               <Button color="gray" onClick={() => setShowModal(false)}>
                 No, Cancel
               </Button>
-              <Button color="failure" onClick={handleDeletePost}>
+              <Button color="failure" onClick={handleDeleteUser}>
                 Yes, I'm sure
               </Button>
             </div>
